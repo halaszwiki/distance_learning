@@ -1,21 +1,11 @@
 package com.example.dl.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -23,7 +13,11 @@ import lombok.Setter;
 @Entity
 @Setter
 @Getter
-@Table(name = "users")
+@Table(	name = "users",
+		uniqueConstraints = {
+				@UniqueConstraint(columnNames = "username"),
+				@UniqueConstraint(columnNames = "email")
+		})
 public class User {
 
 	@Id
@@ -32,31 +26,34 @@ public class User {
 	private String username;
 	private String email;
 	private String password;
-	private String authdata;
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-	private Set<Role> roles;
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(	name = "user_role",
+			joinColumns = @JoinColumn(name = "user_id"),
+			inverseJoinColumns = @JoinColumn(name = "role_id"))
+	private List<Role> roles = new ArrayList<Role>();
 	@ManyToMany
 	@JoinTable(name = "taken_courses", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "course_id"))
 	private List<Course> courses = new ArrayList<>();
-
-
-
 
 	public User(User user) {
 		this.user_id = user.user_id;
 		this.username = user.username;
 		this.email = user.email;
 		this.password = user.password;
-		this.authdata = user.authdata;
 		this.roles = user.roles;
 		this.courses = user.courses;
+	}
+
+	public User(String username, String email, String password) {
+		this.username = username;
+		this.email = email;
+		this.password = password;
 	}
 
 	public User() {
 	}
 
-    public String getEmail() {
+	public String getEmail() {
 		return email;
 	}
 
@@ -84,7 +81,7 @@ public class User {
 		return username;
 	}
 
-	public Set<Role> getRoles() {
+	public List<Role> getRoles() {
 		return roles;
 	}
 
@@ -92,8 +89,5 @@ public class User {
 		this.password = password;
 	}
 
-
-
-
-
+    public void setRoles(List<Role> roles) { this.roles = roles; }
 }

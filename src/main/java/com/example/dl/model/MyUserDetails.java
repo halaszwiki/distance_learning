@@ -1,8 +1,9 @@
-package com.example.dl.service;
+package com.example.dl.model;
 
 
 import java.util.Collection;
 
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -26,10 +27,10 @@ public class MyUserDetails  implements UserDetails{
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return this.user.getRoles()
-				.stream()
-				.map(user -> new SimpleGrantedAuthority("ROLE_" + user.getRole()))
+		return this.user.getRoles().stream()
+				.map(role -> new SimpleGrantedAuthority(role.getRole().name()))
 				.collect(Collectors.toList());
+
 	}
 
 	@Override
@@ -41,6 +42,8 @@ public class MyUserDetails  implements UserDetails{
 	public String getUsername() {
 		return this.user.getUsername();
 	}
+
+	public User getUser(){ return this.user; }
 
 	@Override
 	public boolean isAccountNonExpired() {
@@ -60,5 +63,15 @@ public class MyUserDetails  implements UserDetails{
 	@Override
 	public boolean isEnabled() {
 		return true;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		MyUserDetails user = (MyUserDetails) o;
+		return Objects.equals(this.user.getUser_id(), user.user.getUser_id());
 	}
 }

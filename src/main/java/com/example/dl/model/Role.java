@@ -3,18 +3,22 @@ package com.example.dl.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "role")
+@Table(name = "roles")
 public class Role {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "role_id")
     private int roleId;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "role")
-    private String role;
+    private RoleEnum name;
 
-    public Role() {
+    public Role() { }
+
+    public Role(RoleEnum role) {
+        this.name = role;
     }
 
     public int getRoleId() {
@@ -25,12 +29,12 @@ public class Role {
         this.roleId = roleId;
     }
 
-    public String getRole() {
-        return role;
+    public RoleEnum getRole() {
+        return name;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setRole(RoleEnum role) {
+        this.name = role;
     }
 
 }

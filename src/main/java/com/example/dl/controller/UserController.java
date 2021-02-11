@@ -24,11 +24,6 @@ public class UserController {
 	@Autowired
 	UserService userService;
 
-	@Autowired
-	UserRepository userRepository;
-
-	@Autowired
-	MyUserDetailsService myUserDetailsService;
 
 	@GetMapping("/welcome")
 	public String welcome() {
@@ -40,14 +35,6 @@ public class UserController {
 		List<User> users = userService.findAll();
 		return new ResponseEntity<List<User>>(users, HttpStatus.OK);
 	}
-
-	@PostMapping("/list")
-	public ResponseEntity<User> save(@RequestBody User user) {
-		User saved = userService.save(user);
-		return new ResponseEntity<User>(saved, HttpStatus.OK);
-	}
-
-
 
 	@GetMapping("/{id}")
 	public ResponseEntity<User> get(@PathVariable("id") Long id){
